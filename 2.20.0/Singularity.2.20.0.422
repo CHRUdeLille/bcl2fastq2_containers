@@ -1,0 +1,34 @@
+#!/bin/bash
+#
+# Emilie Ait Yahya <emilie.aityahya@chru-lille.fr>
+# 2018/11/18: initial version
+
+BootStrap: docker
+From: phusion/baseimage:0.11
+%labels
+MAINTAINER emilie.aityahya@chru-lille.fr
+BCL2FASTQ2_VERSION 2.20.0
+RECIPE_VERSION 0.1
+
+%environment
+export TMP=/tmp
+export SOURCE=${TMP}/bcl2fastq2
+export BUILD=${TMP}/bcl2fastq2-v2-20-0-build
+export INSTALL_DIR=/usr/local/bcl2fastq2-v2.20.0
+
+%help
+echo ""
+Singularity container for bcl2fastq2 2.20.0 <http://emea.support.illumina.com/downloads/bcl2fastq-conversion-software-v2-20.html>
+bcl2fastq2 Conversion Software v2.20 User Guide available here <http://emea.support.illumina.com/content/dam/illumina-support/documents/documentation/software_documentation/bcl2fastq/bcl2fastq2_guide_15051736_v2.pdf>
+
+%post
+apt-get update
+apt-get install -y wget unzip alien dpkg-dev debhelper build-essential
+cd ${SOURCE}/
+wget http://emea.support.illumina.com/content/dam/illumina-support/documents/downloads/software/bcl2fastq/bcl2fastq2-v2-20-0-linux-x86-64.zip
+unzip *.zip
+alien ${TMP}/bcl2fastq2-*.rpm
+dpkg -i ${TMP}/bcl2fastq2*.deb
+
+#cd ${INSTALL_DIR}
+apt-get clean
